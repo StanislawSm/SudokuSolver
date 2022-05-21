@@ -3,7 +3,7 @@ import sys
 
 class Sudoku:
     grid_size = 9
-    cell_size = 3
+    block_size = 3
 
     def __init__(self, path_to_grid):
         self.grid = np.loadtxt(path_to_grid, dtype=int)
@@ -19,17 +19,17 @@ class Sudoku:
                     ret += str(self.grid[i, j])
                 if (j+1) == self.grid_size and (i+1) != self.grid_size:
                     ret += '\n'
-                elif (j+1) % self.cell_size == 0:
+                elif (j+1) % self.block_size == 0:
                     ret += '  '
                 else:
                     ret += ' '
-            if (i+1) % self.cell_size == 0 and (i+1) != self.grid_size:
+            if (i+1) % self.block_size == 0 and (i+1) != self.grid_size:
                 ret += '\n'
         return ret
 
     '''
-    checks if a row, a column or a cell has any duplicates
-    field is a list of elements in row, column or cell
+    checks if a row, a column or a block has any duplicates
+    field is a list of elements in row, column or block
     return True if valid, False otherwise
     '''
     @staticmethod
@@ -38,7 +38,7 @@ class Sudoku:
         return len(field) == len(set(field))
 
     '''
-    checks every row, column and cell for duplicates
+    checks every row, column and block for duplicates
     return True if a grid is valid, False otherwise
     '''
     def validate_grid(self):
@@ -53,9 +53,9 @@ class Sudoku:
                 return False
 
         # every cell
-        for i in range(0, self.grid_size, self.cell_size):
-            for j in range(0, self.grid_size, self.cell_size):
-                if not self.is_field_valid(self.grid[i:i+self.cell_size, j:j+self.cell_size].flatten().tolist()):
+        for i in range(0, self.grid_size, self.block_size):
+            for j in range(0, self.grid_size, self.block_size):
+                if not self.is_field_valid(self.grid[i:i+self.block_size, j:j+self.block_size].flatten().tolist()):
                     return False
         return True
 
