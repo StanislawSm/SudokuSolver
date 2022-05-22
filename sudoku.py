@@ -1,11 +1,10 @@
 import numpy as np
-import sys
+import copy
 
 class Sudoku:
-    grid_size = 9
-    block_size = 3
-
-    def __init__(self, path_to_grid):
+    def __init__(self, path_to_grid, grid_size=9, block_size=3):
+        self.grid_size = grid_size
+        self.block_size = block_size
         self.grid = np.loadtxt(path_to_grid, dtype=int)
         assert self.grid.shape[0] == self.grid.shape[1] == self.grid_size, 'Unsupported grid shape'
 
@@ -27,35 +26,26 @@ class Sudoku:
                 ret += '\n'
         return ret
 
-    '''
-    checks if a row, a column or a block has any duplicates
-    field is a list of elements in row, column or block
-    return True if valid, False otherwise
-    '''
-    @staticmethod
-    def is_field_valid(field):
-        field = list(filter(lambda n: n != 0, field))
-        return len(field) == len(set(field))
-
-    '''
-    checks every row, column and block for duplicates
-    return True if a grid is valid, False otherwise
-    '''
     def validate_grid(self):
+        '''
+        Checks every row, column and block in a grid for duplicates
+
+        Return True if valid, False otherwise
+        '''
         # every row
         for i in range(self.grid_size):
-            if not self.is_field_valid(self.grid[i, :].tolist()):
+            if not _is_field_valid(self.grid[i, :].tolist()):
                 return False
 
         # every column
-        for j in range(self.grid_size):
-            if not self.is_field_valid(self.grid[:, i].tolist()):
+        for i in range(self.grid_size):
+            if not _is_field_valid(self.grid[:, i].tolist()):
                 return False
 
         # every cell
         for i in range(0, self.grid_size, self.block_size):
             for j in range(0, self.grid_size, self.block_size):
-                if not self.is_field_valid(self.grid[i:i+self.block_size, j:j+self.block_size].flatten().tolist()):
+                if not _is_field_valid(self.grid[i:i+self.block_size, j:j+self.block_size].flatten().tolist()):
                     return False
         return True
 
@@ -72,9 +62,23 @@ class Sudoku:
         pass
 
 
-def main():
-    sudoku = Sudoku(sys.argv[1])
+def _is_field_valid(field):
+    '''
+    Checks if a row, column or block has any duplicates
+
+    field is a list of elements in a row, column or block
+
+    Return True if valid, False otherwise
+    '''
+    field = list(filter(lambda n: n != 0, field))
+    return len(field) == len(set(field))
+
+def is_fill_legal(sudoku, row_idx, col_idx, num):
+    '''
+    Checks if a cell can be filled with a number legally
+    '''
+    sudoku_copy = copy.deepcopy(sudoku)
+    sudoku_copy.grid[row_idx, col_idx] = num
+    return sudoku_copy.validate_grid()
 
 
-if __name__ == '__main__':
-    main()
