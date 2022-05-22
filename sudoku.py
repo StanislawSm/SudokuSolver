@@ -9,21 +9,21 @@ class Sudoku:
         assert self.grid.shape[0] == self.grid.shape[1] == GRID_SIZE, "Unsupported grid shape"
 
     def __str__(self):
-        ret = ''
+        ret = ""
         for i in range(GRID_SIZE):
             for j in range(GRID_SIZE):
                 if self.grid[i, j] == 0:
-                    ret += '_'
+                    ret += "_"
                 else:
                     ret += str(self.grid[i, j])
                 if (j+1) == GRID_SIZE and (i+1) != GRID_SIZE:
-                    ret += '\n'
-                elif (j+1) % GRID_SIZE == 0:
-                    ret += '  '
+                    ret += "\n"
+                elif (j+1) % BLOCK_SIZE == 0:
+                    ret += "  "
                 else:
-                    ret += ' '
-            if (i+1) % GRID_SIZE == 0 and (i+1) != GRID_SIZE:
-                ret += '\n'
+                    ret += " "
+            if (i+1) % BLOCK_SIZE == 0 and (i+1) != GRID_SIZE:
+                ret += "\n"
         return ret
 
     def validate_grid(self):
@@ -57,13 +57,39 @@ class Sudoku:
         return None, None
 
     def is_fill_legal(self, row_idx, col_idx, num):
+        """
+        Checks if a cell can be filled with a number
+        """
         tmp = self.grid[row_idx, col_idx]
         self.grid[row_idx, col_idx] = num 
         ret = self.validate_grid()
         self.grid[row_idx, col_idx] = tmp
         return ret
 
+    def solve_backtracking(self):
+        """
+        Solves sudoku using a backtracking method
 
+        1. Assign a number to an empty cell
+        2. Recursively check if this assignment leads to a solution
+        3. If it doesn't - try the next number for the current cell
+        """
+        row, col = self.get_empty_cell()
+
+        # No empty cells i.e. solved
+        if row == col == None:
+            return True
+
+        for n in range(1, 10):
+            if self.is_fill_legal(row, col, n):
+                self.grid[row, col] = n
+                if self.solve_backtracking():
+                    return True
+                else:
+                    self.grid[row, col] = 0
+            
+        return False
+                
 
 def _is_field_valid(field):
     """
@@ -76,20 +102,3 @@ def _is_field_valid(field):
     field = list(filter(lambda n: n != 0, field))
     return len(field) == len(set(field)) 
 
-
-def solve_backtracking(sudoku):
-    row, col = sudoku.get_empty_cell()
-    
-    # No empty cells i.e. solved
-    if row == col == None:
-        return True
-    
-    for n in range(1, 10):
-        if sudoku.is_fill_legal(row, col, n):
-            sudoku.grid[row, col] = n
-            if solve_backtracking(sudoku):
-                return True
-            else:
-                sudoku.grid[row, col] = 0
-
-    return False
