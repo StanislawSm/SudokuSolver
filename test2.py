@@ -6,9 +6,8 @@ sudoku = Sudoku(sys.argv[1])
 print(sudoku)
 print("--------------------")
 
-sudoku.solve_backtracking()
+sudoku.solve_constraints()
 
 print(sudoku)
 print(sudoku.validate_grid())
-
 
