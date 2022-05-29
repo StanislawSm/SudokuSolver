@@ -1,7 +1,6 @@
 import copy
 import keras
 import numpy as np
-from model import get_model
 from data_preprocess import get_data
 
 x_train, x_test, y_train, y_test = get_data('sudoku.csv')
