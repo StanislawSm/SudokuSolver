@@ -74,5 +74,6 @@ end = timer()
 
 print('solved puzzle:\n')
 print(game)
+print("columns sums")
 print(np.sum(game, axis=1))
 print("time: ", end - start)

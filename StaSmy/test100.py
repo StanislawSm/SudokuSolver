@@ -62,31 +62,3 @@ def test_accuracy(feats, labels):
 test_accuracy(x_test[:100], y_test[:100])
 
 
-# testing own game
-def solve_sudoku(game):
-    game = game.replace('\n', '')
-    game = game.replace(' ', '')
-    game = np.array([int(j) for j in game]).reshape((9, 9, 1))
-    game = norm(game)
-    game = inference_sudoku(game)
-    return game
-
-
-game = '''
-          0 8 0 0 3 2 0 0 1
-          7 0 3 0 8 0 0 0 2
-          5 0 0 0 0 7 0 3 0
-          0 5 0 0 0 1 9 7 0
-          6 0 0 7 0 9 0 0 8
-          0 4 7 2 0 0 0 5 0
-          0 2 0 6 0 0 0 0 9
-          8 0 0 0 9 0 3 0 5
-          3 0 0 8 2 0 0 1 0
-      '''
-
-game = solve_sudoku(game)
-
-print('solved puzzle:\n')
-print(game)
-
-np.sum(game, axis=1)
