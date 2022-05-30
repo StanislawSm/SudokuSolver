@@ -1,5 +1,6 @@
 import numpy as np
 from constraint import *
+import random
 
 GRID_SIZE = 9
 BLOCK_SIZE = 3
@@ -149,7 +150,6 @@ class Sudoku:
         solver.Solve(self.grid)
         self.grid = solver.bestSol
 
-         
 
 def _is_field_valid(field):
     """
@@ -161,6 +161,7 @@ def _is_field_valid(field):
     """
     field = list(filter(lambda n: n != 0, field))
     return len(field) == len(set(field)) 
+
 
 class SudokuSolver:
     q0 = 0.9
@@ -184,7 +185,7 @@ class SudokuSolver:
         iter = 0
         bestPher = 0.0
         curBestAnt = 0
-        self.InitPhermone()
+        self.InitPheromone()
         while not solved:
             for ant in self.antList:
                 ant.InitSolution(grid, random.randrange(0, (GRID_SIZE**2)-1))
@@ -220,7 +221,7 @@ class SudokuSolver:
     def LocalPhermoneUpdate(self, iCell, iChoice):
         self.pheronomeMatrix[iCell, iChoice] = self.pheronomeMatrix[iCell, iChoice] * 0.9 + self.pher0 * 0.1
 
-    def InitPhermone(self):
+    def InitPheromone(self):
         pher = []
         for i in range(GRID_SIZE ** 2):
             r = []
@@ -238,6 +239,7 @@ class SudokuSolver:
             if self.bestSol[row, col]!=0:
                 indeks = self.bestSol[row, col] - 1
                 self.pheronomeMatrix[i, indeks] = self.pheronomeMatrix[i, indeks] * (1.0 - self.rho) + self.rho * self.bestPher
+
     def copyGrid(self, grid):
         grid = np.array(grid)
         res = []
@@ -247,6 +249,7 @@ class SudokuSolver:
                 row.append(grid[i, j])
             res.append(row)
         return res
+
 
 class Ant:
     iCell = 0
