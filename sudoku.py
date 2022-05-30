@@ -127,7 +127,7 @@ class Sudoku:
                 idx = i*10 + j
                 self.grid[i-1, j-1] = solution[idx]
                 
-        def solve_aco(self):
+    def prepare(self):
         pom = True
         while pom:
             pom = False
@@ -142,7 +142,10 @@ class Sudoku:
                             n = possibleNumbers.pop(0)
                             self.grid[i, j] = n
                             pom = True
-        solver = SudokuSolver(10)
+
+    def solve_aco(self):
+        self.prepare()
+        solver = SudokuSolver(40)
         solver.Solve(self.grid)
         self.grid = solver.bestSol
 
