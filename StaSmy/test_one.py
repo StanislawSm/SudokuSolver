@@ -1,12 +1,10 @@
 import copy
 import keras
 import numpy as np
-from data_preprocess import get_data
+from StaSmy.data_preprocess import get_data
 from timeit import default_timer as timer
 
-x_train, x_test, y_train, y_test = get_data('sudoku.csv')
-
-model = keras.models.load_model('model/sudoku.model')
+model = keras.models.load_model('StaSmy/model/sudoku.model')
 
 
 def norm(a):
@@ -22,7 +20,7 @@ def inference_sudoku(sample):
 
     feat = copy.copy(sample)
     while True:
-        out = model.predict(feat.reshape((1, 9, 9, 1)))
+        out = model.predict(feat.reshape((1, 9, 9, 1)), verbose=0)
         out = out.squeeze()
 
         pred = np.argmax(out, axis=1).reshape((9, 9)) + 1
@@ -56,24 +54,32 @@ def solve_sudoku(game):
     return game
 
 
-game = '''
-          0 8 0 0 3 2 0 0 1
-          7 0 3 0 8 0 0 0 2
-          5 0 0 0 0 7 0 3 0
-          0 5 0 0 0 1 9 7 0
-          6 0 0 7 0 9 0 0 8
-          0 4 7 2 0 0 0 5 0
-          0 2 0 6 0 0 0 0 9
-          8 0 0 0 9 0 3 0 5
-          3 0 0 8 2 0 0 1 0
-      '''
+def solve_sudoku_from_npArray(game):
+    game.reshape((9, 9, 1))
+    game = norm(game)
+    game = inference_sudoku(game)
+    return game
 
-start = timer()
-game = solve_sudoku(game)
-end = timer()
 
-print('solved puzzle:\n')
-print(game)
-print("columns sums")
-print(np.sum(game, axis=1))
-print("time: ", end - start)
+def test_one():
+    game = '''
+              0 8 0 0 3 2 0 0 1
+              7 0 3 0 8 0 0 0 2
+              5 0 0 0 0 7 0 3 0
+              0 5 0 0 0 1 9 7 0
+              6 0 0 7 0 9 0 0 8
+              0 4 7 2 0 0 0 5 0
+              0 2 0 6 0 0 0 0 9
+              8 0 0 0 9 0 3 0 5
+              3 0 0 8 2 0 0 1 0
+          '''
+
+    start = timer()
+    game = solve_sudoku(game)
+    end = timer()
+
+    print('solved puzzle:\n')
+    print(game)
+    print("columns sums")
+    print(np.sum(game, axis=1))
+    print("time: ", end - start)
