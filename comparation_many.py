@@ -3,16 +3,18 @@ from sudoku import Sudoku
 from StaSmy.test_one import solve_sudoku_from_npArray
 from timeit import default_timer as timer
 from StaSmy.data_preprocess import get_data
+import matplotlib.pyplot as plt
 
 x_train, x_test, y_train, y_test = get_data('StaSmy/sudoku.csv')
 
-numbers = [1, 20, 50, 100, 1000, 2000, 5000]
+numbers = [1, 5, 10, 20, 30, 40, 50]
 backtrackingTime = [0] * len(numbers)
 constraintTime = [0] * len(numbers)
 antTime = [0] * len(numbers)
 NNTime = [0] * len(numbers)
 
 for number in numbers:
+    print(number, " starting")
     for i in range(0, number):
         sudokuBacktracking = Sudoku("sample_data/sudoku1.txt")
         sudokuBacktracking.grid = StaSmy.test_one.denorm(x_train[i]).reshape(9, 9).astype(int)
@@ -45,11 +47,20 @@ for number in numbers:
         solve_sudoku_from_npArray(sudokuNN.grid)
         end = timer()
         NNTime[numbers.index(number)] += end - start
+    print(number, " done")
 
-print(backtrackingTime)
-print(constraintTime)
-print(antTime)
-print(NNTime)
+plt.yscale("log")
+plt.plot(numbers, backtrackingTime, label="backtracking")
+plt.plot(numbers, constraintTime, label="constraints")
+plt.plot(numbers, antTime, label="ant algorithm")
+plt.plot(numbers, NNTime, label="neural network")
+plt.title("algorithms comparison")
+plt.xlabel("number of problems")
+plt.ylabel("summary time needed [s]")
+plt.legend()
+plt.show()
+plt.savefig("algCompLog.png")
+
 
 
 
