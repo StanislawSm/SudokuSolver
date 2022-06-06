@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 x_train, x_test, y_train, y_test = get_data('StaSmy/sudoku.csv')
 
-numbers = [1, 5, 10, 20, 30, 40, 50]
+numbers = [1, 2, 5, 8, 12, 15, 20]
 backtrackingTime = [0] * len(numbers)
 constraintTime = [0] * len(numbers)
 antTime = [0] * len(numbers)
@@ -58,8 +58,9 @@ plt.title("algorithms comparison")
 plt.xlabel("number of problems")
 plt.ylabel("summary time needed [s]")
 plt.legend()
-plt.show()
 plt.savefig("algCompLog.png")
+plt.show()
+
 
 
 
